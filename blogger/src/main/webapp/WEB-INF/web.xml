@@ -38,5 +38,8 @@
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
+	<display-name>RemoteReception</display-name>
+  	<welcome-file-list>
+   		<welcome-file>/WEB-INF/views/index.jsp</welcome-file>   
+  	</welcome-file-list>
 </web-app>

@@ -35,5 +35,8 @@ public class LoginAction {
 	public String submitLogin() {
 		return "home";
 	}
-	
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	public String index() {
+		return "home";
+	}
 }
