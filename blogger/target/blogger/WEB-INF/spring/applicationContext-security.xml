@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Sample namespace-based configuration
+  -
+  -->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+    <global-method-security pre-post-annotations="enabled">
+        <!-- AspectJ pointcut expression that locates our "post" method and applies security that way
+        <protect-pointcut expression="execution(* bigbank.*Service.post*(..))" access="ROLE_TELLER"/>
+        -->
+    </global-method-security>
+	<http pattern="/login" security="none"></http>
+    <http auto-config="false" entry-point-ref="authenticationProcessingFilterEntryPoint" use-expressions="true">
+    	<csrf disabled="true"/>
+        <custom-filter position="FORM_LOGIN_FILTER" ref="loginFilter"/>
+        <intercept-url pattern="/*" access="isAuthenticated()" />
+        <intercept-url pattern="/changepassword_result" access="permitAll" />
+         <intercept-url pattern="/changepassword" access="permitAll" /> 
+         <intercept-url pattern="/*.jsp" access="isAuthenticated()" /> 
+         
+    	       
+<!--        
+        <form-login login-page="/login" authentication-failure-url="/login?login_error=1"/>
+-->        
+        <logout invalidate-session="true" logout-success-url="/"/>
+<!--
+        <remember-me />
+-->        
+<!--
+    Uncomment to enable X509 client authentication support
+        <x509 />
+-->
+        <!-- Uncomment to limit the number of sessions a user can have -->
+<!--  
+        <session-management>
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </session-management>
+-->
+    </http>
+	
+    <!--
+    Usernames/Passwords are
+        rod/koala
+        dianne/emu
+        scott/wombat
+        peter/opal
+    -->
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider>
+        <password-encoder hash="md5" />
+            <jdbc-user-service data-source-ref="dataSource"
+            users-by-username-query=
+            	"SELECT username, password, enabled FROM users WHERE username = ?;"
+			authorities-by-username-query=
+				"SELECT username, authority 
+				FROM users u, authorities a
+				WHERE u.userid = a.userid AND u.username = ?;"/>
+           	<!--
+           	<password-encoder hash="md5"/>
+            <user-service>
+            	
+                <user name="rod" password="a564de63c2d0da68cf47586ee05984d7" authorities="ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER" />
+                <user name="dianne" password="65d15fe9156f9c4bbffd98085992a44e" authorities="ROLE_USER,ROLE_TELLER" />
+                <user name="scott" password="2b58af6dddbd072ed27ffc86725d7d3a" authorities="ROLE_USER" />
+                <user name="peter" password="22b5c9accc6e1ba628cedc63a72d57f8" authorities="ROLE_USER" />
+            </user-service>
+             -->
+        </authentication-provider>
+    </authentication-manager>
+
+<!-- added by Danny Chan (start) -->
+
+    <beans:bean id="loginFilter" class="com.blogger.app.authentication.LoginFilter">
+    	<beans:property name="authenticationManager" ref="authenticationManager" />
+	<beans:property name="sessionAuthenticationStrategy" ref="sas" />
+    	<beans:property name="authenticationFailureHandler" ref="failureHandler" />
+    	<beans:property name="authenticationSuccessHandler" ref="successHandler" />
+    </beans:bean>
+
+	<beans:bean id="sas" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+		<beans:constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+		<beans:property name="maximumSessions" value="1" />
+		<beans:property name="messageSource" ref="messageSource" />
+		<beans:property name="exceptionIfMaximumExceeded" value="true" />
+	</beans:bean>
+
+	<beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+	<beans:bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
+		<beans:constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+		<!--<beans:property name="expiredUrl" value="/session-expired.htm" /> -->
+	</beans:bean>
+  
+    <beans:bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg name="loginFormUrl" value="/login" />
+    </beans:bean>
+
+    <beans:bean id="failureHandler" class="com.blogger.app.authentication.authenticationFailureHandler">
+        <beans:property name="defaultFailureUrl" value="/login?login_error=1" />
+    </beans:bean>
+
+    <beans:bean id="successHandler" class="com.blogger.app.authentication.authenticationSuccessHandler">
+    </beans:bean>
+
+<!-- added by Danny Chan (end) -->
+
+</beans:beans>
