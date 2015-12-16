@@ -30,19 +30,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		request.setAttribute("context", context);
 		
-		logger.info("j_username: " + request.getParameter("j_username"));
-		logger.info("j_password: " + request.getParameter("j_password"));
+		logger.info("username: " + request.getParameter("username"));
+		logger.info("password: " + request.getParameter("password"));
 
-		if ( request.getParameter("j_username")==null || 
-			 request.getParameter("j_password")==null ) {
+		if ( request.getParameter("username")==null || 
+			 request.getParameter("password")==null ) {
 			throw new inputValidationException( context.getMessage("error.missing_information", new String[0], Locale.US) );
 		}
 
-		if ( request.getParameter("j_username").equals("") ) {
+		if ( request.getParameter("username").equals("") ) {
 			throw new inputValidationException( context.getMessage("error.missing_username", new String[0], Locale.US) );
 		}
 
-		if ( request.getParameter("j_password").equals("") ) {
+		if ( request.getParameter("password").equals("") ) {
 			throw new inputValidationException( context.getMessage("error.missing_password", new String[0], Locale.US) );
 		}
 
@@ -62,7 +62,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 				throw new DisabledException( context.getMessage("error.account_disabled", new String[] {}, Locale.US)); 
 		}
 
-//		boolean isPasswordExpired = tools.isPasswordExpired(request.getParameter("j_username"), userManager, passwordHistoryManager, auditPropertyBean, globalParameters.getNumberOfDaysForChangePassword());
+//		boolean isPasswordExpired = tools.isPasswordExpired(request.getParameter("username"), userManager, passwordHistoryManager, auditPropertyBean, globalParameters.getNumberOfDaysForChangePassword());
 
 //		System.out.println( "isPasswordExpired: " + isPasswordExpired );
 //		

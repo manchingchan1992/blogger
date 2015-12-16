@@ -1,5 +1,5 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix='c' uri='http://java.sun.com/jstl/core_rt' %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -20,8 +20,8 @@ function MM_preloadImages() { //v3.0
     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
 }
 function resetform(){
-	document.f.j_username.value="";
-	document.f.j_password.value="";
+	document.f.username.value="";
+	document.f.password.value="";
 }
 
 function submitform(){
@@ -70,7 +70,7 @@ function lower(ustr)
 </script>
 </head>
 
-<body onload="document.f.j_username.focus();">
+<body onload="document.f.username.focus();">
 <table width="564" border="0" align="center" cellpadding="0" cellspacing="0" class="formPos">
   <tr>
     <td align="left" valign="middle">
@@ -82,15 +82,15 @@ function lower(ustr)
           <td>Username:&nbsp;
             <label for="select"></label>
             <label for="textfield"></label></td>
-          <td width="232"><label for="j_username"></label>
-            <!-- <input type="text" name="j_username" id="username" value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/> -->
-            <input type="text" name="j_username" id="username" onkeyup="lower(this)" onKeyPress="return letternumber(event)"/>
+          <td width="232"><label for="username"></label>
+            <!-- <input type="text" name="username" id="username" value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/> -->
+            <input type="text" name="username" id="username" onkeyup="lower(this)" onKeyPress="return letternumber(event)"/>
             </td>
         </tr>
         <tr>
-          <td>Password:&nbsp;</td>
-          <td><label for="j_password"></label>
-            <input type="password" name="j_password" id="j_password" /></td>
+          <td>password:&nbsp;</td>
+          <td><label for="password"></label>
+            <input type="password" name="password" id="password" /></td>
         </tr>
         <!--  
         <tr>
@@ -104,6 +104,8 @@ function lower(ustr)
           </td>
         </tr>
       </table>
+      <input type="hidden" 
+                     name="${_csrf.parameterName}" value="${_csrf.token}" />
       
      </form>
       <div class="msg_login">

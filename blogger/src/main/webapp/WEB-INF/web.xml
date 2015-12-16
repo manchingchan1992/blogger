@@ -32,7 +32,9 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
+	<session-config>
+    	<session-timeout>30</session-timeout>
+  	</session-config>
 		
 	<servlet-mapping>
 		<servlet-name>appServlet</servlet-name>
