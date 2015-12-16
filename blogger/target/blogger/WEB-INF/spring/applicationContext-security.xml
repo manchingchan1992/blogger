@@ -17,21 +17,23 @@
         -->
     </global-method-security>
     <http auto-config="false" entry-point-ref="authenticationProcessingFilterEntryPoint" use-expressions="true">
-    	<session-management invalid-session-url="/timeout.jsp">  
+    	<session-management invalid-session-url="/admin/timeout.jsp">  
             <concurrency-control max-sessions="10" error-if-maximum-exceeded="true" />  
         </session-management>  
         <custom-filter position="FORM_LOGIN_FILTER" ref="loginFilter"/>
-        <intercept-url pattern="/login" access="permitAll" />
-        <intercept-url pattern="/*" access="isAuthenticated()" />
+        <intercept-url pattern="/admin/login" access="permitAll" />
+        <intercept-url pattern="/index" access="permitAll" />
+        <intercept-url pattern="/admin/*" access="isAuthenticated()" />
         <intercept-url pattern="/changepassword_result" access="permitAll" />
          <intercept-url pattern="/changepassword" access="permitAll" /> 
-         <intercept-url pattern="/*.jsp" access="isAuthenticated()" /> 
+         <intercept-url pattern="/admin/*.jsp" access="isAuthenticated()" /> 
+         <intercept-url pattern="/blog/*" access="permitAll" />
          
     	       
 <!--        
         <form-login login-page="/login" authentication-failure-url="/login?login_error=1"/>
 -->        
-        <logout invalidate-session="true" logout-success-url="/timeout.jsp"/>
+        <logout invalidate-session="true" logout-success-url="/admin/timeout.jsp"/>
 <!--
         <remember-me />
 -->        
@@ -103,11 +105,11 @@
 	</beans:bean>
   
     <beans:bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-        <beans:constructor-arg name="loginFormUrl" value="/login" />
+        <beans:constructor-arg name="loginFormUrl" value="/admin/login" />
     </beans:bean>
 
     <beans:bean id="failureHandler" class="com.blogger.app.authentication.authenticationFailureHandler">
-        <beans:property name="defaultFailureUrl" value="/login?login_error=1" />
+        <beans:property name="defaultFailureUrl" value="/admin/login?login_error=1" />
     </beans:bean>
 
     <beans:bean id="successHandler" class="com.blogger.app.authentication.authenticationSuccessHandler">

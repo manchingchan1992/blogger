@@ -7,8 +7,8 @@
 
 
 <sec:authorize access="isAuthenticated()">
-<% response.sendRedirect("home"); %>
+<% response.sendRedirect("admin/home"); %>
 </sec:authorize>
 <sec:authorize access="!isAuthenticated()">
-<% response.sendRedirect("login"); %>
+<% response.sendRedirect("blog/index"); %>
 </sec:authorize>
