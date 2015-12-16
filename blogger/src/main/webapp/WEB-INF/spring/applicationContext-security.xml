@@ -19,6 +19,9 @@
 	<http pattern="/login" security="none"></http>
     <http auto-config="false" entry-point-ref="authenticationProcessingFilterEntryPoint" use-expressions="true">
     	<csrf disabled="true"/>
+    	<session-management invalid-session-url="/timeout.jsp">  
+            <concurrency-control max-sessions="10" error-if-maximum-exceeded="true" />  
+        </session-management>  
         <custom-filter position="FORM_LOGIN_FILTER" ref="loginFilter"/>
         <intercept-url pattern="/*" access="isAuthenticated()" />
         <intercept-url pattern="/changepassword_result" access="permitAll" />
@@ -29,7 +32,7 @@
 <!--        
         <form-login login-page="/login" authentication-failure-url="/login?login_error=1"/>
 -->        
-        <logout invalidate-session="true" logout-success-url="/"/>
+        <logout invalidate-session="true" logout-success-url="/timeout.jsp"/>
 <!--
         <remember-me />
 -->        
@@ -54,7 +57,7 @@
     -->
     <authentication-manager alias="authenticationManager">
         <authentication-provider>
-        <password-encoder hash="md5" />
+        <password-encoder hash="plaintext" />
             <jdbc-user-service data-source-ref="dataSource"
             users-by-username-query=
             	"SELECT username, password, enabled FROM users WHERE username = ?;"
@@ -78,8 +81,11 @@
 <!-- added by Danny Chan (start) -->
 
     <beans:bean id="loginFilter" class="com.blogger.app.authentication.LoginFilter">
+            <beans:property name="filterProcessesUrl" value="/j_spring_security_check"></beans:property>  
     	<beans:property name="authenticationManager" ref="authenticationManager" />
-	<beans:property name="sessionAuthenticationStrategy" ref="sas" />
+    	<beans:property name="messageSource" ref="messageSource" />
+    	
+	<!--<beans:property name="sessionAuthenticationStrategy" ref="sas" />  -->
     	<beans:property name="authenticationFailureHandler" ref="failureHandler" />
     	<beans:property name="authenticationSuccessHandler" ref="successHandler" />
     </beans:bean>
@@ -87,7 +93,6 @@
 	<beans:bean id="sas" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
 		<beans:constructor-arg name="sessionRegistry" ref="sessionRegistry" />
 		<beans:property name="maximumSessions" value="1" />
-		<beans:property name="messageSource" ref="messageSource" />
 		<beans:property name="exceptionIfMaximumExceeded" value="true" />
 	</beans:bean>
 

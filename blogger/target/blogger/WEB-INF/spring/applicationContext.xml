@@ -27,4 +27,13 @@
             </props>
         </property>
     </bean>
+    
+    <bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>WEB-INF/config/messages</value>
+			</list>
+		</property>
+	</bean>
 </beans>
