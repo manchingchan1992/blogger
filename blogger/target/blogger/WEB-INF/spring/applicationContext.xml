@@ -15,8 +15,11 @@
     <bean id="hibernate3AnnotatedSessionFactory"
         class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan" value="com.blogger.app.entity"/>
         <property name="annotatedClasses">
             <list>
+				<value>com.blogger.app.entity.User</value>
+				<value>com.blogger.app.entity.Menu</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -35,5 +38,20 @@
 				<value>WEB-INF/config/messages</value>
 			</list>
 		</property>
+	</bean>
+	
+	<bean id="userManager" class="com.blogger.app.service.UserManagerImp">
+		<property name="userDao" ref="userDao" />
+	</bean>
+
+	<bean id="userDao" class="com.blogger.app.dao.UserDaoImp">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="adminManager" class="com.blogger.app.service.AdminManagerImp">
+		<property name="adminDao" ref="adminDao" />
+	</bean>
+
+	<bean id="adminDao" class="com.blogger.app.dao.AdminDaoImp">
 	</bean>
 </beans>

@@ -1,10 +1,13 @@
 package com.blogger.app.authentication;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.blogger.app.entity.Menu;
+import com.blogger.app.entity.User;
+import com.blogger.app.service.AdminManager;
+import com.blogger.app.service.UserManager;
+import com.blogger.app.util.MenuBuilder;
 
 
 
@@ -61,7 +70,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		} catch (DisabledException e) {
 				throw new DisabledException( context.getMessage("error.account_disabled", new String[] {}, Locale.US)); 
 		}
+		UserManager userManager = (UserManager)context.getBean("userManager");
+		User user = userManager.getUserByName(request.getParameter("username"));
+	    HttpSession session = request.getSession();		
 
+	    session.setAttribute("USERBEAN",user);
+		AdminManager adminManager = (AdminManager)context.getBean("adminManager");
+		if (user != null){
+			List menuList = adminManager.getMenuList(user.getPostCode());
+			logger.info("menuList.size() :" + menuList.size());
+			ArrayList<Menu> menuTree = MenuBuilder.buildTree(menuList);
+			session.setAttribute("MenuList",menuTree);
+		}
 //		boolean isPasswordExpired = tools.isPasswordExpired(request.getParameter("username"), userManager, passwordHistoryManager, auditPropertyBean, globalParameters.getNumberOfDaysForChangePassword());
 
 //		System.out.println( "isPasswordExpired: " + isPasswordExpired );

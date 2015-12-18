@@ -33,7 +33,7 @@
 <!--        
         <form-login login-page="/login" authentication-failure-url="/login?login_error=1"/>
 -->        
-        <logout invalidate-session="true" logout-success-url="/admin/timeout.jsp"/>
+        <logout invalidate-session="true" logout-success-url="/admin/login.jsp"/>
 <!--
         <remember-me />
 -->        
