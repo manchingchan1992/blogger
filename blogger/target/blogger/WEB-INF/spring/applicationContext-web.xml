@@ -23,6 +23,16 @@
 	
 	<context:component-scan base-package="com.blogger.app" />
 	
-	
+	<beans:bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<beans:property name="defaultLocale" value="en" />
+	</beans:bean>
+
+	<interceptors>
+        <beans:bean
+            class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <beans:property name="paramName" value="lang" />
+        </beans:bean>
+    </interceptors>
 	
 </beans:beans>

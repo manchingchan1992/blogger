@@ -1,9 +1,4 @@
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> 
+<%@ include file="/WEB-INF/views/include/setting.jsp" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -79,7 +74,7 @@ function lower(ustr)
    	<form name="f" action="<c:url value='/j_spring_security_check'/>" method="post">    
       <table width="300" border="0" cellspacing="0" cellpadding="6">
         <tr>
-          <td>Username:&nbsp;
+          <td><spring:message code="login.loginName"/>:&nbsp;
             <label for="select"></label>
             <label for="textfield"></label></td>
           <td width="232"><label for="username"></label>
@@ -88,7 +83,7 @@ function lower(ustr)
             </td>
         </tr>
         <tr>
-          <td>password:&nbsp;</td>
+          <td><spring:message code="login.password"/>:&nbsp;</td>
           <td><label for="password"></label>
             <input type="password" name="password" id="password" /></td>
         </tr>

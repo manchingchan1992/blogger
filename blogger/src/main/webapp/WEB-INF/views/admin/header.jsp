@@ -1,3 +1,4 @@
+<%@ include file="/WEB-INF/views/include/setting.jsp" %>
 <%@ page language="java" import="java.util.*" contentType="text/html; charset=UTF-8" %>
 <%@ page import="com.blogger.app.entity.User" %>
 <%@ page import="java.util.HashMap" %>
@@ -79,23 +80,23 @@ String navStr = (String)request.getParameter("navStr");
                 </button>
                 <a href="#" class="show-sidebar">
 					<i class="fa fa-bars fa-lg"></i>
-				</a><img src="home/images/dp_logo.png" style="height: 50px;float: left;"><a class="navbar-brand" href="#" style="padding: 15px 10px 15px 10px;">民主黨居民資料庫</a>
+				</a><a class="navbar-brand" href="#" style="padding: 15px 10px 15px 10px;"><spring:message code="cms.title"/></a>
             </div>
         
             <!-- Top Menu Items -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                	<a href="MainAction"><bean:message key="livingmk.home"/></a>
+                	<a href="MainAction"><spring:message code="cms.home"/></a>
                 </li>
                 <li class="dropdown">
-                	<a href="#" target="_blank"><bean:message key="livingmk.instruction"/></a>
+                	<a href="#" target="_blank"><spring:message code="cms.instruction"/></a>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <%= userName %>,<%= regionDescription %> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="LogoutAction"><i class="fa fa-fw fa-power-off"></i> <bean:message key="livingmk.logout"/></a>
+                            <a href="LogoutAction"><i class="fa fa-fw fa-power-off"></i> <spring:message code="cms.logout"/></a>
                         </li>
                     </ul>
                 </li>

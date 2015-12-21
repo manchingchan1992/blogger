@@ -1,5 +1,5 @@
+<%@ include file="/WEB-INF/views/include/setting.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java"  import="java.sql.*"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page language="java" import="java.util.*" %>
 
 <!-- page header -->
