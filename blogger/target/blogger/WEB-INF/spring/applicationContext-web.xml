@@ -35,4 +35,15 @@
         </beans:bean>
     </interceptors>
 	
+	<beans:bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <beans:property name="messageConverters">
+            <beans:list>
+                <beans:bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+	<beans:bean class="com.blogger.app.action.admin.CategoryAction">
+		<beans:property name="restTemplate" ref="restTemplate" />
+	</beans:bean>
+	
 </beans:beans>

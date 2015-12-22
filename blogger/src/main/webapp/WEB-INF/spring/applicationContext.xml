@@ -56,4 +56,15 @@
 
 	<bean id="adminDao" class="com.blogger.app.dao.AdminDaoImp">
 	</bean>
+	
+	<bean id="categoryService" class="com.blogger.app.service.CategoryServiceImp">
+		<property name="categoryDao" ref="categoryDao" />
+	</bean>
+
+	<bean id="categoryDao" class="com.blogger.app.dao.CategoryDaoImp">
+	</bean>
+	
+	<bean id="categoryHandler" class="com.blogger.app.handler.CategoryHandler">
+		<property name="categoryService" ref="categoryService" />
+	</bean>
 </beans>
