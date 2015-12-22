@@ -21,7 +21,7 @@ String navStr = (String)request.getParameter("navStr");
 %>
 <html>
 	<head>
-	<title>E-Database</title>
+	<title><spring:message code="cms.title"/></title>
 	<meta http-equiv=Content-Type content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- <link href="./css/mainStyles.css" rel="stylesheet" type="text/css">-->
@@ -96,7 +96,7 @@ String navStr = (String)request.getParameter("navStr");
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <%= userName %>,<%= regionDescription %> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="LogoutAction"><i class="fa fa-fw fa-power-off"></i> <spring:message code="cms.logout"/></a>
+                            <a href="/logout"><i class="fa fa-fw fa-power-off"></i> <spring:message code="cms.logout"/></a>
                         </li>
                     </ul>
                 </li>

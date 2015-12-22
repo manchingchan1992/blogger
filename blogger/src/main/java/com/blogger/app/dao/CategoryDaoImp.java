@@ -29,6 +29,7 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 	public List<Category> getCategoryList(){
 		logger.info("Getting List of categories!");
         List categoryList = getHibernateTemplate().find("FROM Category ORDER BY id ASC");
+		logger.info("categoryList.size:"+categoryList.size());
         return categoryList;
 	}
 	

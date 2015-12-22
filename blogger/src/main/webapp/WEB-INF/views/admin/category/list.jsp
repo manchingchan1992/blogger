@@ -20,9 +20,7 @@
 				<tr>
 					<th>#ID</th>
 					<th>Name</th>
-					<th>Email</th>
-					<th>framework</th>
-					<th>Action</th>
+					<th>Chinese Name</th>
 				</tr>
 			</thead>
 
