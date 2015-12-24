@@ -13,7 +13,7 @@ public interface CategoryDao {
 	
 	public Category getCategoryByName(String categoryname);
 	
-	public Category getCategoryById(String id);
+	public Category getCategoryById(Integer id);
 	
 	public void saveCategory(Category category);
 	

@@ -29,7 +29,7 @@ public class CategoryServiceImp implements CategoryService{
     	return categoryDao.getCategoryByName(categoryname);
     }
     
-    public Category getCategoryById(String categoryid){
+    public Category getCategoryById(Integer categoryid){
     	return categoryDao.getCategoryById(categoryid);
     }
     
@@ -43,9 +43,13 @@ public class CategoryServiceImp implements CategoryService{
 //    	}
     }
     
-    public void updateCategory(Category category){
+    public void saveCategory(Category category){
     	if(category != null){
-    		categoryDao.saveCategory(category);
+    		if (getCategoryById(category.getId())==null) {
+    			categoryDao.addCategory(category);
+    		} else {
+    			categoryDao.saveCategory(category);
+    		}
     	}
     }
     

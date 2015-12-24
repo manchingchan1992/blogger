@@ -33,10 +33,12 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
         return categoryList;
 	}
 	
-	public Category getCategoryById(String id){
+	public Category getCategoryById(Integer id){
 		logger.info("Getting an category by id!");
         String query="select categoryid, categoryname, password, email, enabled , expired from categorys where categoryid=?";
-        Category category = (Category)getHibernateTemplate().find("FROM categorys where categoryid = ?", id);
+        if (id == null)
+        	return null;
+        Category category = (Category)getHibernateTemplate().find("FROM Category where id = ?", id);
         return category;
 	}
 	
@@ -66,8 +68,9 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 	
 	public void addCategory(Category category){
 		logger.info("Adding Category");
-		String query = "insert into categorys(categoryname, password, email, enabled, expired) values(?, md5(?), ?, ?, ?)";
-		String query2 = "insert into categorys_x_groups(categoryid, groupid) values(?, '1')";
+		Date today = new Date();
+		category.setCreateDate(today);
+		getHibernateTemplate().save(category);
 //
 //		
 //		logger.info("####CategoryDao " + category.getCategoryname());

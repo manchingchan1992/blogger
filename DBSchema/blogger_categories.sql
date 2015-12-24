@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `blogger` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `blogger`;
 -- MySQL dump 10.13  Distrib 5.6.24, for Win32 (x86)
 --
 -- Host: 127.0.0.1    Database: blogger
@@ -28,6 +30,8 @@ CREATE TABLE `categories` (
   `cname` varchar(255) DEFAULT NULL,
   `enabled` int(11) NOT NULL DEFAULT '1',
   `parent_id` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `create_user` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parentID_idx` (`parent_id`),
   CONSTRAINT `parentID` FOREIGN KEY (`parent_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
@@ -40,7 +44,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'IT','IT',1,NULL),(2,'Sports','Sports',1,NULL);
+INSERT INTO `categories` VALUES (1,'IT','IT',1,NULL,NULL,NULL),(2,'Sports','Sports',1,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-22 15:16:45
+-- Dump completed on 2015-12-24 12:14:26

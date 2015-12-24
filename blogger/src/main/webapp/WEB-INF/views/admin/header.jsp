@@ -96,7 +96,7 @@ String navStr = (String)request.getParameter("navStr");
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <%= userName %>,<%= regionDescription %> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="/logout"><i class="fa fa-fw fa-power-off"></i> <spring:message code="cms.logout"/></a>
+                            <a href="logout"><i class="fa fa-fw fa-power-off"></i> <spring:message code="cms.logout"/></a>
                         </li>
                     </ul>
                 </li>

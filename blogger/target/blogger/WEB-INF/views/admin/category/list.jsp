@@ -5,7 +5,7 @@
 </jsp:include>
 <jsp:include page="/WEB-INF/views/admin/message.jsp" flush="true"/>
 <!-- start of Body -->
-<c:if test="${not empty msg}">
+		<c:if test="${not empty msg}">
 		    <div class="alert alert-${css} alert-dismissible" role="alert">
 			<button type="button" class="close" data-dismiss="alert" 
                                 aria-label="Close">
@@ -14,7 +14,6 @@
 			<strong>${msg}</strong>
 		    </div>
 		</c:if>
-		
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -46,6 +45,9 @@
 			    </tr>
 			</c:forEach>
 		</table>
-
+		<div>
+			<spring:url value="/admin/category/add" var="urlAddUser" />
+			<a href="${urlAddUser}">Add Category</a>
+		</div>
 <!-- End of Body -->
 <jsp:include page="/WEB-INF/views/admin/footer.jsp" flush="true" />

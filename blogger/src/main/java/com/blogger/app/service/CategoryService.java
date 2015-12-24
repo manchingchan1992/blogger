@@ -11,7 +11,7 @@ public interface CategoryService extends Serializable{
 
 	public void createCategory(Category category);
 	
-	public void updateCategory(Category category);
+	public void saveCategory(Category category);
 	
 	public void deleteCategory(String id);
 	
@@ -19,5 +19,5 @@ public interface CategoryService extends Serializable{
 	
 	public Category getCategoryByName(String categoryname);
 	
-	public Category getCategoryById(String categoryid);
+	public Category getCategoryById(Integer categoryid);
 }

@@ -1,6 +1,5 @@
 package com.blogger.app.entity;
 
-import java.sql.Date;
 import java.util.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
@@ -22,6 +23,9 @@ implements java.io.Serializable {
 	private String cname;
 
 	private String parentID;
+	
+	private Date createDate;
+	private String createUser;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -60,5 +64,27 @@ implements java.io.Serializable {
 		this.parentID = parentID;
 	}
 	
-	
+	@Column(name = "create_date", columnDefinition="DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+	@Column(name = "create_user")
+	public String getCreateUser() {
+		return createUser;
+	}
+
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
+	}
+
+	//Check if this is for New of Update
+	@Transient
+	public boolean isNew() {
+		return (this.id == null);
+	}
 }
