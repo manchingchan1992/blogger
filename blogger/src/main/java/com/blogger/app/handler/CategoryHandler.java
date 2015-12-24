@@ -8,12 +8,17 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.blogger.app.entity.Category;
 import com.blogger.app.service.CategoryService;
@@ -22,7 +27,7 @@ import com.blogger.app.util.UrlRouteMapping;
 /**
  * Handles requests for the application home page.
  */
-@Controller
+@RestController
 public class CategoryHandler {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CategoryHandler.class);
@@ -41,10 +46,13 @@ public class CategoryHandler {
 		return categoryList;
     }
 	
-	@RequestMapping(value = UrlRouteMapping.CATEGORY_SAVE_ACTION)
-	public @ResponseBody Category saveCategory(@RequestBody Category category) {
+	@RequestMapping(value = UrlRouteMapping.CATEGORYHANDLER_SAVE_ACTION, method = RequestMethod.POST)
+	public Category saveCategory(@RequestBody Category category) {
+		logger.info("save category");
 		categoryService.saveCategory(category);
-		logger.info("save category:"+category);
-	    return category;
-    }
+//		HttpHeaders responseHeaders = new HttpHeaders();
+//	    responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+//	    return new ResponseEntity<Category>(category, responseHeaders, HttpStatus.CREATED);
+		return category;
+	}
 }

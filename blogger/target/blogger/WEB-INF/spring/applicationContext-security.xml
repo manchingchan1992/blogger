@@ -16,6 +16,7 @@
         <protect-pointcut expression="execution(* bigbank.*Service.post*(..))" access="ROLE_TELLER"/>
         -->
     </global-method-security>
+    <http pattern="/handler/**" security="none"/>
     <http auto-config="false" entry-point-ref="authenticationProcessingFilterEntryPoint" use-expressions="true">
     	<session-management invalid-session-url="/admin/timeout.jsp">  
             <concurrency-control max-sessions="10" error-if-maximum-exceeded="true" />  
@@ -28,7 +29,6 @@
          <intercept-url pattern="/changepassword" access="permitAll" /> 
          <intercept-url pattern="/admin/*.jsp" access="isAuthenticated()" /> 
          <intercept-url pattern="/blog/*" access="permitAll" />
-         
     	       
 <!--        
         <form-login login-page="/login" authentication-failure-url="/login?login_error=1"/>
