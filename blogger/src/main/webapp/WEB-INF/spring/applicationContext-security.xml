@@ -16,8 +16,9 @@
         <protect-pointcut expression="execution(* bigbank.*Service.post*(..))" access="ROLE_TELLER"/>
         -->
     </global-method-security>
-    <http pattern="/handler/**" security="none"/>
+    <!-- <http pattern="/handler/**" security="none"/> -->
     <http auto-config="false" entry-point-ref="authenticationProcessingFilterEntryPoint" use-expressions="true">
+    	<csrf disabled="true"/>
     	<session-management invalid-session-url="/admin/timeout.jsp">  
             <concurrency-control max-sessions="10" error-if-maximum-exceeded="true" />  
         </session-management>  

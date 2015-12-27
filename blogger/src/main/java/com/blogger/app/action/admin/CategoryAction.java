@@ -13,7 +13,11 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
@@ -90,7 +94,7 @@ public class CategoryAction {
 		@RequestMapping(value = UrlRouteMapping.CATEGORY_SAVE_ACTION, method = RequestMethod.POST)
 		public String saveCategory(@ModelAttribute("categoryForm") Category category,
 				BindingResult result, Model model, 
-				final RedirectAttributes redirectAttributes, HttpServletRequest request) {
+				final RedirectAttributes redirectAttributes, HttpServletRequest request, HttpEntity<String> requestEntity) {
 
 			logger.debug("saveCategory(): {}",category);
 			categoryFormValidator.validate(category, result);
@@ -102,7 +106,21 @@ public class CategoryAction {
 			    category.setCreateUser(user.getLoginName());
 				String requestURL = UrlRouteMapping.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SAVE_ACTION;
 				try {
-					category = restTemplate.postForObject(requestURL,category, Category.class);
+					logger.debug("requestEntity.getBody:"+requestEntity.getBody());
+					logger.debug("requestEntity.getheader:"+requestEntity);
+					HttpHeaders requestHeaders = new HttpHeaders();
+					HttpHeaders headers = requestEntity.getHeaders();
+					requestHeaders.add(HttpHeaders.COOKIE, headers.getFirst(HttpHeaders.COOKIE));
+					logger.debug("requestHeaders.Cookie:"+requestHeaders.getFirst(HttpHeaders.COOKIE));
+					requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+					HttpEntity<Category> categoryEntity = new HttpEntity<Category>(category,requestHeaders);
+					ResponseEntity<Category> categoryResponse = restTemplate.exchange(
+						    requestURL,
+						    HttpMethod.POST,
+						    categoryEntity,
+						    Category.class);
+					category = categoryResponse.getBody();
+//					category = restTemplate.postForObject(requestURL,category, Category.class);
 					redirectAttributes.addFlashAttribute("css", "success");
 					if(category.isNew()){
 					  redirectAttributes.addFlashAttribute("msg", "Category added successfully!");
@@ -111,7 +129,7 @@ public class CategoryAction {
 					}
 			    }
 			    catch (HttpStatusCodeException e) {
-			        MainExceptionHandler.handleJsonHandlerError(model, e);
+			        MainExceptionHandler.handleJsonHandlerError(redirectAttributes, e);
 			    }
 				
 				

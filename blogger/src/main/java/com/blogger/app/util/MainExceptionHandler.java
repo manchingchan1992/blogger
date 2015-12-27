@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @ControllerAdvice
@@ -33,6 +34,19 @@ public class MainExceptionHandler{
         	e1.printStackTrace();
         	model.addAttribute("css", "danger");
         	model.addAttribute("msg", "Failed!");
+		}
+	}
+	
+	public static void handleJsonHandlerError(RedirectAttributes redirectAttributes,HttpStatusCodeException e){
+		try {
+			HandlerException ex = jsonConverter.getObjectMapper().readValue(e.getResponseBodyAsByteArray(),HandlerException.class);
+			logger.info("Exception:"+e.getResponseBodyAsString());
+			redirectAttributes.addFlashAttribute("css", "danger");
+			redirectAttributes.addFlashAttribute("msg", "Error Code:"+ex.getErrCode()+" Description:"+ ex.getErrMsg());
+        } catch (Exception e1){
+        	e1.printStackTrace();
+        	redirectAttributes.addFlashAttribute("css", "danger");
+        	redirectAttributes.addFlashAttribute("msg", "Failed!");
 		}
 	}
 }
