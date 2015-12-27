@@ -1,5 +1,6 @@
 package com.blogger.app.action.admin;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,13 +23,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.blogger.app.entity.Category;
 import com.blogger.app.entity.User;
+import com.blogger.app.util.HandlerException;
+import com.blogger.app.util.MainExceptionHandler;
 import com.blogger.app.util.UrlRouteMapping;
 import com.blogger.app.validator.CategoryFormValidator;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * Handles requests for the application home page.
@@ -46,16 +53,22 @@ public class CategoryAction {
 	@Autowired
 	CategoryFormValidator categoryFormValidator;
 	
+	@Autowired
+	private MappingJackson2HttpMessageConverter jsonConverter;
+	
 	// list page
 	@RequestMapping(value = UrlRouteMapping.CATEGORY_LIST_ACTION, method = RequestMethod.GET)
 	public String showAllCategory(Model model, HttpServletRequest request) {
 		String requestURL = UrlRouteMapping.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_LIST_ACTION;
 		logger.debug("showAllCategory():"+requestURL);
-		List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
-		logger.debug("showAllCategory():categoryList"+(categoryList!= null));
-		logger.info("categoryList.size:"+categoryList.size());
-
-		model.addAttribute("categoryList", categoryList);
+		try {
+	    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
+	    	logger.info("categoryList size:"+categoryList.size());
+			model.addAttribute("categoryList", categoryList);
+	    }
+	    catch (HttpStatusCodeException e) {
+	        MainExceptionHandler.handleJsonHandlerError(model, e);
+	    }
 		return UrlRouteMapping.CATEGORY_LIST_URL;
 
 	}
@@ -89,28 +102,17 @@ public class CategoryAction {
 			    category.setCreateUser(user.getLoginName());
 				String requestURL = UrlRouteMapping.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SAVE_ACTION;
 				try {
-					ResponseEntity<Category> response =  restTemplate.postForEntity(requestURL, category, Category.class);
-					// Add message to flash scope
-					HttpStatus status = response.getStatusCode();
-					if (status.is2xxSuccessful()){
-						redirectAttributes.addFlashAttribute("css", "success");
-						if(category.isNew()){
-						  redirectAttributes.addFlashAttribute("msg", "Category added successfully!");
-						}else{
-						  redirectAttributes.addFlashAttribute("msg", "Category updated successfully!");
-						}
+					category = restTemplate.postForObject(requestURL,category, Category.class);
+					redirectAttributes.addFlashAttribute("css", "success");
+					if(category.isNew()){
+					  redirectAttributes.addFlashAttribute("msg", "Category added successfully!");
+					}else{
+					  redirectAttributes.addFlashAttribute("msg", "Category updated successfully!");
 					}
-					else {
-						redirectAttributes.addFlashAttribute("css", "danger");
-						redirectAttributes.addFlashAttribute("msg", "Category update failed! error Code:"+status.value());
-					}
-					
-				}
-				catch (Exception e){
-					e.printStackTrace();
-					redirectAttributes.addFlashAttribute("css", "danger");
-					redirectAttributes.addFlashAttribute("msg", "Category update failed!");
-				}
+			    }
+			    catch (HttpStatusCodeException e) {
+			        MainExceptionHandler.handleJsonHandlerError(model, e);
+			    }
 				
 				
 				// POST/REDIRECT/GET

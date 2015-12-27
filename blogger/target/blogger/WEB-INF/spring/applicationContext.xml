@@ -63,10 +63,13 @@
 
 	<bean id="categoryDao" class="com.blogger.app.dao.CategoryDaoImp">
 	</bean>
+	
+	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+	
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
         <property name="messageConverters">
             <list>
-                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+				<ref bean="jsonConverter"/>
             </list>
         </property>
     </bean>

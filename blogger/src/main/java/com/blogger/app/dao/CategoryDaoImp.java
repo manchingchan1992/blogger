@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.blogger.app.util.CustomHibernateDaoSupport;
+import com.blogger.app.util.HandlerException;
 import com.blogger.app.entity.Category;
 
 
@@ -26,28 +27,42 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 	/** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     
-	public List<Category> getCategoryList(){
+	public List<Category> getCategoryList() throws HandlerException {
 		logger.info("Getting List of categories!");
-        List categoryList = getHibernateTemplate().find("FROM Category ORDER BY id ASC");
-		logger.info("categoryList.size:"+categoryList.size());
-        return categoryList;
+		try {
+			List categoryList = getHibernateTemplate().find("FROM Category ORDER BY id ASC");
+			logger.info("categoryList.size:"+categoryList.size());
+	        return categoryList;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.info("Exception :" + e.getMessage());
+			throw new HandlerException("000",e.getMessage());
+		}
 	}
 	
-	public Category getCategoryById(Integer id){
+	public Category getCategoryById(Integer id) throws HandlerException {
 		logger.info("Getting an category by id!");
         String query="select categoryid, categoryname, password, email, enabled , expired from categorys where categoryid=?";
         if (id == null)
         	return null;
-        Category category = (Category)getHibernateTemplate().find("FROM Category where id = ?", id);
-        return category;
+        try {
+        	Category category = (Category)getHibernateTemplate().find("FROM Category where id = ?", id);
+            return category;
+        }
+        catch (Exception e) {
+			e.printStackTrace();
+			logger.info("Exception :" + e.getMessage());
+			throw new HandlerException("000",e.getMessage());
+		}
 	}
 	
-	public Category getCategoryByName(String name){
+	public Category getCategoryByName(String name) throws HandlerException {
 		Category category = (Category)getHibernateTemplate().find("FROM categorys where categoryid = ?", name);
         return category;
 	}
 	
-	public void saveCategory(Category category) {
+	public void saveCategory(Category category) throws HandlerException {
         logger.info("Saving Category");
         
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -66,11 +81,18 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 //        logger.info("Save Category, Rows affected: " + count);
     }
 	
-	public void addCategory(Category category){
+	public void addCategory(Category category) throws HandlerException {
 		logger.info("Adding Category");
-		Date today = new Date();
-		category.setCreateDate(today);
-		getHibernateTemplate().save(category);
+		try {
+			Date today = new Date();
+			category.setCreateDate(today);
+			getHibernateTemplate().save(category);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.info("Exception :" + e.getMessage());
+			throw new HandlerException("000",e.getMessage());
+		}
 //
 //		
 //		logger.info("####CategoryDao " + category.getCategoryname());
@@ -100,7 +122,7 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 //	    logger.info("Add Category, Rows affected: " + count);
 	}
 	
-	public void deleteCategory(String id) {
+	public void deleteCategory(String id) throws HandlerException {
         logger.info("Deleting Category");
         
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
