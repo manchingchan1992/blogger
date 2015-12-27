@@ -47,7 +47,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class CategoryAction {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CategoryAction.class);
-	
+	static final String CSRF_PARAM_NAME = "_csrf";
+
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -110,6 +111,8 @@ public class CategoryAction {
 					logger.debug("requestEntity.getheader:"+requestEntity);
 					HttpHeaders requestHeaders = new HttpHeaders();
 					HttpHeaders headers = requestEntity.getHeaders();
+					logger.debug("CSRF_PARAM_NAME:"+request.getParameter(CSRF_PARAM_NAME));
+					requestHeaders.add("X-CSRF-TOKEN",request.getParameter(CSRF_PARAM_NAME));
 					requestHeaders.add(HttpHeaders.COOKIE, headers.getFirst(HttpHeaders.COOKIE));
 					logger.debug("requestHeaders.Cookie:"+requestHeaders.getFirst(HttpHeaders.COOKIE));
 					requestHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -131,7 +134,11 @@ public class CategoryAction {
 			    catch (HttpStatusCodeException e) {
 			        MainExceptionHandler.handleJsonHandlerError(redirectAttributes, e);
 			    }
-				
+				catch (Exception e1) {
+					e1.printStackTrace();
+		        	redirectAttributes.addFlashAttribute("css", "danger");
+		        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
+			    }
 				
 				// POST/REDIRECT/GET
 				return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;

@@ -46,7 +46,7 @@ public class MainExceptionHandler{
         } catch (Exception e1){
         	e1.printStackTrace();
         	redirectAttributes.addFlashAttribute("css", "danger");
-        	redirectAttributes.addFlashAttribute("msg", "Failed!");
+        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
 		}
 	}
 }
