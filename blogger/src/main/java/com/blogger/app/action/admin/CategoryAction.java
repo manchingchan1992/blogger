@@ -35,6 +35,7 @@ import com.blogger.app.entity.Category;
 import com.blogger.app.entity.User;
 import com.blogger.app.util.HandlerException;
 import com.blogger.app.util.MainExceptionHandler;
+import com.blogger.app.util.RequestGateway;
 import com.blogger.app.util.UrlRouteMapping;
 import com.blogger.app.validator.CategoryFormValidator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -47,7 +48,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class CategoryAction {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CategoryAction.class);
-	static final String CSRF_PARAM_NAME = "_csrf";
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -61,18 +61,32 @@ public class CategoryAction {
 	@Autowired
 	private MappingJackson2HttpMessageConverter jsonConverter;
 	
+	@Autowired
+	private RequestGateway requestGateway;
+	
+	@Autowired
+	private MainExceptionHandler exceptionHandler;
+	
 	// list page
 	@RequestMapping(value = UrlRouteMapping.CATEGORY_LIST_ACTION, method = RequestMethod.GET)
-	public String showAllCategory(Model model, HttpServletRequest request) {
-		String requestURL = UrlRouteMapping.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_LIST_ACTION;
-		logger.debug("showAllCategory():"+requestURL);
+	public String showAllCategory(Model model, HttpServletRequest request, HttpEntity<String> requestEntity) {
+		
 		try {
-	    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
+			String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_LIST_ACTION;
+			logger.debug("showAllCategory():"+requestURL);
+			List<Category> categoryList  = (List<Category>)requestGateway.sendRequest(request, requestEntity, requestURL, List.class, null, HttpMethod.GET);
+
+//	    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
 	    	logger.info("categoryList size:"+categoryList.size());
 			model.addAttribute("categoryList", categoryList);
 	    }
 	    catch (HttpStatusCodeException e) {
-	        MainExceptionHandler.handleJsonHandlerError(model, e);
+	    	exceptionHandler.handleJsonHandlerError(model, e);
+	    }
+		catch (Exception e1) {
+			e1.printStackTrace();
+			model.addAttribute("css", "danger");
+			model.addAttribute("msg", "Failed! Error:"+e1.getMessage());
 	    }
 		return UrlRouteMapping.CATEGORY_LIST_URL;
 
@@ -105,16 +119,17 @@ public class CategoryAction {
 				HttpSession session = request.getSession();		
 			    User user = (User)session.getAttribute("USERBEAN");
 			    category.setCreateUser(user.getLoginName());
-				String requestURL = UrlRouteMapping.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SAVE_ACTION;
 				try {
-					HttpHeaders requestHeaders = UrlRouteMapping.restTemplHeaderBuilder(requestEntity, request);
-					HttpEntity<Category> categoryEntity = new HttpEntity<Category>(category,requestHeaders);
-					ResponseEntity<Category> categoryResponse = restTemplate.exchange(
-						    requestURL,
-						    HttpMethod.POST,
-						    categoryEntity,
-						    Category.class);
-					category = categoryResponse.getBody();
+//					HttpHeaders requestHeaders = UrlRouteMapping.restTemplHeaderBuilder(requestEntity, request);
+//					HttpEntity<Category> categoryEntity = new HttpEntity<Category>(category,requestHeaders);
+//					ResponseEntity<Category> categoryResponse = restTemplate.exchange(
+//						    requestURL,
+//						    HttpMethod.POST,
+//						    categoryEntity,
+//						    Category.class);
+//					category = categoryResponse.getBody();
+					String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SAVE_ACTION;
+					category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, category, HttpMethod.POST);
 //					category = restTemplate.postForObject(requestURL,category, Category.class);
 					redirectAttributes.addFlashAttribute("css", "success");
 					if(category.isNew()){
@@ -124,7 +139,7 @@ public class CategoryAction {
 					}
 			    }
 			    catch (HttpStatusCodeException e) {
-			        MainExceptionHandler.handleJsonHandlerError(redirectAttributes, e);
+			    	exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
 			    }
 				catch (Exception e1) {
 					e1.printStackTrace();

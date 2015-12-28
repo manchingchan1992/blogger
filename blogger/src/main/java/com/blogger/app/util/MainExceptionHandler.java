@@ -24,7 +24,7 @@ public class MainExceptionHandler{
 		return new ResponseEntity<HandlerException>(ex, HttpStatus.BAD_REQUEST);
 	}
 	
-	public static void handleJsonHandlerError(Model model,HttpStatusCodeException e){
+	public void handleJsonHandlerError(Model model,HttpStatusCodeException e){
 		try {
 			HandlerException ex = jsonConverter.getObjectMapper().readValue(e.getResponseBodyAsByteArray(),HandlerException.class);
 			logger.info("Exception:"+e.getResponseBodyAsString());
@@ -33,11 +33,11 @@ public class MainExceptionHandler{
         } catch (Exception e1){
         	e1.printStackTrace();
         	model.addAttribute("css", "danger");
-        	model.addAttribute("msg", "Failed!");
+			model.addAttribute("msg", "Failed! Error:"+e1.getMessage());
 		}
 	}
 	
-	public static void handleJsonHandlerError(RedirectAttributes redirectAttributes,HttpStatusCodeException e){
+	public void handleJsonHandlerError(RedirectAttributes redirectAttributes,HttpStatusCodeException e){
 		try {
 			HandlerException ex = jsonConverter.getObjectMapper().readValue(e.getResponseBodyAsByteArray(),HandlerException.class);
 			logger.info("Exception:"+e.getResponseBodyAsString());

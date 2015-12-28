@@ -73,4 +73,10 @@
             </list>
         </property>
     </bean>
+    
+    <bean id="requestGateway" class="com.blogger.app.util.RequestGateway">
+    </bean>
+    
+    <bean id="exceptionHandler" class="com.blogger.app.util.MainExceptionHandler">
+    </bean>
 </beans>
