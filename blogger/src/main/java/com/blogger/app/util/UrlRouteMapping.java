@@ -2,6 +2,13 @@ package com.blogger.app.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
+
 public class UrlRouteMapping {
 	
 	public final static String CATEGORY_FORM_URL = "admin/category/categoryform";
@@ -12,11 +19,30 @@ public class UrlRouteMapping {
 	public final static String CATEGORYHANDLER_LIST_ACTION = "/handler/categoryHandler/list";
 	public final static String CATEGORYHANDLER_SAVE_ACTION = "/handler/categoryHandler/save";
 
+	public static final String CSRF_PARAM_NAME = "_csrf";
+	private static final Logger logger = LoggerFactory.getLogger(UrlRouteMapping.class);
+
 	
 	public static String getServerAbsolutePath(HttpServletRequest request){
 		return request.getScheme() + "://" +   // "http" + "://
 	             request.getServerName() +       // "myhost"
 	             ":" +                           // ":"
 	             request.getServerPort() + request.getContextPath(); 
+	}
+	
+	public static HttpHeaders restTemplHeaderBuilder(HttpEntity<String> requestEntity,HttpServletRequest request ){
+		logger.debug("requestEntity.getBody:"+requestEntity.getBody());
+		logger.debug("requestEntity.getheader:"+requestEntity);
+		HttpHeaders requestHeaders = new HttpHeaders();
+		HttpHeaders headers = requestEntity.getHeaders();
+		String csrf_token = request.getParameter(CSRF_PARAM_NAME);
+		if (csrf_token !=null && csrf_token.trim().length()>0){
+			logger.debug("CSRF_PARAM_NAME:"+request.getParameter(CSRF_PARAM_NAME));
+			requestHeaders.add("X-CSRF-TOKEN",request.getParameter(CSRF_PARAM_NAME));
+		}
+		requestHeaders.add(HttpHeaders.COOKIE, headers.getFirst(HttpHeaders.COOKIE));
+		logger.debug("requestHeaders.Cookie:"+requestHeaders.getFirst(HttpHeaders.COOKIE));
+		requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+		return requestHeaders;
 	}
 }

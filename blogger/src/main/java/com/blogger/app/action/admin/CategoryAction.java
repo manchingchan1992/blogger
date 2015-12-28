@@ -107,15 +107,7 @@ public class CategoryAction {
 			    category.setCreateUser(user.getLoginName());
 				String requestURL = UrlRouteMapping.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SAVE_ACTION;
 				try {
-					logger.debug("requestEntity.getBody:"+requestEntity.getBody());
-					logger.debug("requestEntity.getheader:"+requestEntity);
-					HttpHeaders requestHeaders = new HttpHeaders();
-					HttpHeaders headers = requestEntity.getHeaders();
-					logger.debug("CSRF_PARAM_NAME:"+request.getParameter(CSRF_PARAM_NAME));
-					requestHeaders.add("X-CSRF-TOKEN",request.getParameter(CSRF_PARAM_NAME));
-					requestHeaders.add(HttpHeaders.COOKIE, headers.getFirst(HttpHeaders.COOKIE));
-					logger.debug("requestHeaders.Cookie:"+requestHeaders.getFirst(HttpHeaders.COOKIE));
-					requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+					HttpHeaders requestHeaders = UrlRouteMapping.restTemplHeaderBuilder(requestEntity, request);
 					HttpEntity<Category> categoryEntity = new HttpEntity<Category>(category,requestHeaders);
 					ResponseEntity<Category> categoryResponse = restTemplate.exchange(
 						    requestURL,
