@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,4 +56,10 @@ public class CategoryHandler {
 //	    return new ResponseEntity<Category>(category, responseHeaders, HttpStatus.CREATED);
 		return category;
 	}
+	
+	@RequestMapping(value = UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+"{id}")
+	public @ResponseBody Category selectCategory(@PathVariable("id") int id) {
+		Category category = categoryService.getCategoryById(id);
+		return category;
+    }
 }

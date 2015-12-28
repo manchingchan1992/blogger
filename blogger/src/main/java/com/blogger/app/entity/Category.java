@@ -17,12 +17,13 @@ import javax.persistence.UniqueConstraint;
 		@UniqueConstraint(columnNames = "id")})
 public class Category
 implements java.io.Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private Integer id;
 	private String name;
 	private String cname;
 
-	private String parentID;
+	private Integer parentID ;
 	
 	private Date createDate;
 	private String createUser;
@@ -56,11 +57,11 @@ implements java.io.Serializable {
 	}
 
 	@Column(name = "parent_id")
-	public String getParentID() {
+	public Integer getParentID() {
 		return parentID;
 	}
 	
-	public void setParentID(String parentID) {
+	public void setParentID(Integer parentID) {
 		this.parentID = parentID;
 	}
 	

@@ -22,7 +22,10 @@ public class RequestGateway{
 	
 	public Object sendRequest(HttpServletRequest request, HttpEntity<String> requestEntity, String requestURL, Class<?> className, Object modelToBeSubmit, HttpMethod method){
 		HttpHeaders requestHeaders = restTemplHeaderBuilder(requestEntity, request);
-		HttpEntity entity = new HttpEntity(modelToBeSubmit,requestHeaders);
+		HttpEntity<?> entity = new HttpEntity<Object>(modelToBeSubmit,requestHeaders);
+		logger.debug("modelToBeSubmit:"+modelToBeSubmit);
+		logger.debug("entity.getBody:"+entity.getBody());
+		logger.debug("entity.getheader:"+entity);
 		ResponseEntity response = restTemplate.exchange(
 			    requestURL,
 			    method,

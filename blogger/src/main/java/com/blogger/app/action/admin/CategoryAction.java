@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -154,6 +157,32 @@ public class CategoryAction {
 				// return "user/list";
 
 			}
+
+		}
+		
+		// show update form
+		@RequestMapping(value = UrlRouteMapping.CATEGORY_SHOW_UPDATE_FORM_ACTION, method = RequestMethod.GET)
+		public String showUpdateCategoryForm(@PathVariable("id") int id, Model model, HttpServletRequest request, HttpEntity<String> requestEntity
+				,final RedirectAttributes redirectAttributes) {
+
+			logger.debug("showUpdateCategoryForm() : {}", id);
+			try {
+				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+id;
+				Category category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, null, HttpMethod.GET);
+				model.addAttribute("categoryForm", category);
+			}
+			catch (HttpStatusCodeException e) {
+		    	exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
+		    	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		    }
+			catch (Exception e1) {
+				e1.printStackTrace();
+	        	redirectAttributes.addFlashAttribute("css", "danger");
+	        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
+	        	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		    }
+			
+			return UrlRouteMapping.CATEGORY_FORM_URL;
 
 		}
 }

@@ -2,7 +2,9 @@ package com.blogger.app;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -68,6 +70,44 @@ public class ClientTest{
 		        // log or process either of these...
 		        // you'll probably have to unmarshall the XML manually (only 2 fields so easy)
 		    }
+		    requestURL = "http://localhost:8080/blogger"+UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+2;
+			  headers = new HttpHeaders();
+			    headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+			    request = new HttpEntity<String>(headers);
+			    try {
+			    	HttpEntity entity = new HttpEntity(null,headers);
+					ResponseEntity response = restTemplate.exchange(
+						    requestURL,
+						    HttpMethod.GET,
+						    entity,
+						    Category.class);
+					Category category = (Category)response.getBody();
+					System.out.println(category.getName());
+			    }
+			    catch (HttpStatusCodeException e) {
+			        String responseBody = e.getResponseBodyAsString();
+			        String statusText = e.getStatusText();
+			        try {
+						HandlerException ex = jsonConverter.getObjectMapper().readValue(e.getResponseBodyAsByteArray(),HandlerException.class);
+						System.out.println("error code:"+ex.getErrCode());
+						System.out.println("error msg:"+ex.getErrMsg());
+			        } catch (JsonParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (JsonMappingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				    System.out.println("responseBody"+responseBody);
+				    System.out.println("statusText"+statusText);
+
+			        // log or process either of these...
+			        // you'll probably have to unmarshall the XML manually (only 2 fields so easy)
+			    }
+		    
 //		 List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
 
 //		 Category category = new Category();

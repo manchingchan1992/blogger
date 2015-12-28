@@ -16,8 +16,12 @@ public class UrlRouteMapping {
 	public final static String CATEGORY_LIST_ACTION = "/admin/category";
 	public final static String CATEGORY_SHOW_FORM_ACTION = "/admin/category/add";
 	public final static String CATEGORY_SAVE_ACTION = "/admin/category/save";
+	public final static String CATEGORY_SHOW_UPDATE_FORM_ACTION = "/admin/category/{id}/update";
+
 	public final static String CATEGORYHANDLER_LIST_ACTION = "/handler/categoryHandler/list";
 	public final static String CATEGORYHANDLER_SAVE_ACTION = "/handler/categoryHandler/save";
+	public final static String CATEGORYHANDLER_SELECT_ACTION = "/handler/categoryHandler/select/";
+
 
 	public static final String CSRF_PARAM_NAME = "_csrf";
 	private static final Logger logger = LoggerFactory.getLogger(UrlRouteMapping.class);

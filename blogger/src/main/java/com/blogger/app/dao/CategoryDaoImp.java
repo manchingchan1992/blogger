@@ -42,12 +42,14 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 	}
 	
 	public Category getCategoryById(Integer id) throws HandlerException {
-		logger.info("Getting an category by id!");
+		logger.info("Getting an category by id!id:"+id);
         String query="select categoryid, categoryname, password, email, enabled , expired from categorys where categoryid=?";
         if (id == null)
         	return null;
         try {
-        	Category category = (Category)getHibernateTemplate().find("FROM Category where id = ?", id);
+        	List categoryList = getHibernateTemplate().find("FROM Category where id = ?", id);
+        	logger.info("categoryList.size:"+categoryList.size());
+        	Category category = (Category)categoryList.get(0);
             return category;
         }
         catch (Exception e) {
