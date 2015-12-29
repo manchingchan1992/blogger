@@ -30,6 +30,21 @@
 			</div>
 		</div>
 	</spring:bind>
+
+	<spring:bind path="parentID">
+		<div class="form-group ${status.error ? 'has-error' : ''}">
+			<label class="col-sm-2 control-label">Parent Category</label>
+			<div class="col-sm-5">
+				<form:select path="parentID" class="form-control">
+					<form:option value="" label="--- Select ---" />
+					<form:options items="${categoryList}" />
+				</form:select>
+				<form:errors path="parentID" class="control-label" />
+			</div>
+			<div class="col-sm-5"></div>
+		</div>
+	</spring:bind>
+
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 			<c:choose>

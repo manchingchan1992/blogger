@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -77,10 +78,10 @@ public class CategoryAction {
 		try {
 			String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_LIST_ACTION;
 			logger.debug("showAllCategory():"+requestURL);
-			List<Category> categoryList  = (List<Category>)requestGateway.sendRequest(request, requestEntity, requestURL, List.class, null, HttpMethod.GET);
+			Category[] categoryList  = (Category[]) requestGateway.sendRequest(request, requestEntity, requestURL, Category[].class, null, HttpMethod.GET);
 
 //	    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
-	    	logger.info("categoryList size:"+categoryList.size());
+	    	logger.info("categoryList size:"+categoryList.length);
 			model.addAttribute("categoryList", categoryList);
 	    }
 	    catch (HttpStatusCodeException e) {
@@ -97,9 +98,10 @@ public class CategoryAction {
 
 	// show add user form
 	@RequestMapping(value = UrlRouteMapping.CATEGORY_SHOW_FORM_ACTION, method = RequestMethod.GET)
-	public String showAddCategoryForm(Model model) {
+	public String showAddCategoryForm(Model model, HttpServletRequest request, HttpEntity<String> requestEntity) {
 		logger.debug("showAddCategoryForm()");
 		Category category = new Category();
+		populateDefaultModel(model, request, requestEntity);
 		model.addAttribute("categoryForm", category);
 		return UrlRouteMapping.CATEGORY_FORM_URL;
 	}
@@ -184,5 +186,29 @@ public class CategoryAction {
 			
 			return UrlRouteMapping.CATEGORY_FORM_URL;
 
+		}
+		
+		private void populateDefaultModel(Model model, HttpServletRequest request, HttpEntity<String> requestEntity) {
+			try {
+				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_LIST_ACTION;
+				logger.debug("populateDefaultModel():"+requestURL);
+				Category[] responseList  = (Category[]) requestGateway.sendRequest(request, requestEntity, requestURL, Category[].class, null, HttpMethod.GET);
+
+//		    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
+		    	logger.info("responseList size:"+responseList.length);
+		    	Map<Integer, String> categoryList = new LinkedHashMap<Integer, String>();
+		    	for (Category category : responseList){
+		    		categoryList.put(category.getId(), category.getName()+" - "+category.getCname());
+		    	}
+				model.addAttribute("categoryList", categoryList);
+		    }
+		    catch (HttpStatusCodeException e) {
+		    	exceptionHandler.handleJsonHandlerError(model, e);
+		    }
+			catch (Exception e1) {
+				e1.printStackTrace();
+				model.addAttribute("css", "danger");
+				model.addAttribute("msg", "Failed! Error:"+e1.getMessage());
+		    }
 		}
 }
