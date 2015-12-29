@@ -171,6 +171,7 @@ public class CategoryAction {
 			try {
 				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+id;
 				Category category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, null, HttpMethod.GET);
+				populateDefaultModel(model, request, requestEntity);
 				model.addAttribute("categoryForm", category);
 			}
 			catch (HttpStatusCodeException e) {
