@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import javax.sql.DataSource;
+
 import java.security.*;
 
 import org.apache.commons.logging.Log;
@@ -20,7 +23,11 @@ public class AdminDaoImp extends CustomHibernateDaoSupport implements AdminDao{
 
 	/** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+    private DataSource dataSource;
 	
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 	public List getMenuList(String postCode) {
 		// TODO Auto-generated method stub
 		logger.info("Getting List of Menu!");

@@ -26,7 +26,11 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 
 	/** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-    
+    private DataSource dataSource;
+	
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 	public List<Category> getCategoryList() throws HandlerException {
 		logger.info("Getting List of categories!");
 		try {
@@ -66,7 +70,14 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 	
 	public void saveCategory(Category category) throws HandlerException {
         logger.info("Saving Category");
-        
+        try {
+			getHibernateTemplate().update(category);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.info("Exception :" + e.getMessage());
+			throw new HandlerException("000",e.getMessage());
+		}
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //Date today = new Date();
         //String now = sdf.format(today);

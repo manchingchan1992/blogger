@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd	
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<context:annotation-config />
+	<context:component-scan base-package="com.blogger.app" />
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
@@ -12,23 +20,43 @@
         <property name="password" value="" />
     </bean>	
     
-    <bean id="hibernate3AnnotatedSessionFactory"
-        class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="packagesToScan" value="com.blogger.app.entity"/>
         <property name="annotatedClasses">
             <list>
 				<value>com.blogger.app.entity.User</value>
 				<value>com.blogger.app.entity.Menu</value>
+				<value>com.blogger.app.entity.Category</value>
             </list>
         </property>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-                <prop key="hibernate.current_session_context_class">thread</prop>
+                <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
                 <prop key="hibernate.show_sql">false</prop>
             </props>
         </property>
+    </bean>
+    
+    <!-- <bean id="transactionInterceptor" 
+       class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+		   <props>
+			<prop key="save">PROPAGATION_REQUIRED</prop>
+			<prop key="update">PROPAGATION_REQUIRED</prop>
+		   </props>
+		</property>
+    </bean>
+    -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    
+    <bean id="transactionManager" 
+        class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+	  	<property name="dataSource" ref="dataSource" />
+	  	<property name="sessionFactory" ref="sessionFactory" />
     </bean>
     
     <bean id="messageSource"
@@ -43,7 +71,6 @@
 	</bean>
 	
 	<bean id="userManager" class="com.blogger.app.service.UserManagerImp">
-		<property name="userDao" ref="userDao" />
 	</bean>
 
 	<bean id="userDao" class="com.blogger.app.dao.UserDaoImp">
@@ -51,17 +78,17 @@
 	</bean>
 	
 	<bean id="adminManager" class="com.blogger.app.service.AdminManagerImp">
-		<property name="adminDao" ref="adminDao" />
 	</bean>
 
 	<bean id="adminDao" class="com.blogger.app.dao.AdminDaoImp">
+		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
 	<bean id="categoryService" class="com.blogger.app.service.CategoryServiceImp">
-		<property name="categoryDao" ref="categoryDao" />
 	</bean>
 
 	<bean id="categoryDao" class="com.blogger.app.dao.CategoryDaoImp">
+		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
 	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
@@ -79,4 +106,23 @@
     
     <bean id="exceptionHandler" class="com.blogger.app.util.MainExceptionHandler">
     </bean>
+    
+    <!-- <bean id="proxyCreator"
+		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		create a wrapper proxy around all beans named *DaoImpl. in particular,
+			a dynamic proxy will be generated for model dao implementations  
+		<property name="beanNames">
+			<list>
+				<value>*Service</value>
+				<value>userManager</value>
+				<value>adminManager</value>
+			</list>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+    -->
 </beans>
