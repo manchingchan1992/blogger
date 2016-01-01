@@ -71,6 +71,8 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 	public void saveCategory(Category category) throws HandlerException {
         logger.info("Saving Category");
         try {
+        	Date today = new Date();
+			category.setUpdateDate(today);
 			getHibernateTemplate().update(category);
 		}
 		catch (Exception e) {

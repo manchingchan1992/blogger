@@ -123,7 +123,12 @@ public class CategoryAction {
 			} else {
 				HttpSession session = request.getSession();		
 			    User user = (User)session.getAttribute("USERBEAN");
-			    category.setCreateUser(user.getLoginName());
+			    if(category.isNew()){
+				    category.setCreateUser(user.getLoginName());
+			    }
+			    else 
+			    	category.setUpdateUser(user.getLoginName());
+
 				try {
 //					HttpHeaders requestHeaders = UrlRouteMapping.restTemplHeaderBuilder(requestEntity, request);
 //					HttpEntity<Category> categoryEntity = new HttpEntity<Category>(category,requestHeaders);

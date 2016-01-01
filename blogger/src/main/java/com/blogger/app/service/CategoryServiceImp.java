@@ -47,7 +47,7 @@ public class CategoryServiceImp implements CategoryService{
     @Transactional(readOnly = false)
     public void saveCategory(Category category){
     	if(category != null){
-    		if (getCategoryById(category.getId())==null) {
+    		if (category.isNew()) {
     			categoryDao.addCategory(category);
     		} else {
     			categoryDao.saveCategory(category);

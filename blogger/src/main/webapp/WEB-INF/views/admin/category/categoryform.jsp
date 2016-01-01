@@ -8,7 +8,11 @@
 <form:form class="form-horizontal" method="post"
 	modelAttribute="categoryForm" action="${categoryActionUrl}">
 	<form:hidden path="id" />
-
+	<form:hidden path="createDate" />
+	<form:hidden path="createUser" />
+	<form:hidden path="updateDate" />
+	<form:hidden path="updateUser" />
+	
 	<spring:bind path="name">
 		<div class="form-group ${status.error ? 'has-error' : ''}">
 			<label class="col-sm-2 control-label">Name</label>
@@ -42,6 +46,20 @@
 				<form:errors path="parentID" class="control-label" />
 			</div>
 			<div class="col-sm-5"></div>
+		</div>
+	</spring:bind>
+
+	<spring:bind path="enabled">
+		<div class="form-group ${status.error ? 'has-error' : ''}">
+			<label class="col-sm-2 control-label">Enabled</label>
+			<div class="col-sm-10">
+				<div class="checkbox">
+					<label>
+						<form:checkbox path="enabled" id="enabled" />
+					</label>
+					<form:errors path="enabled" class="control-label" />
+				</div>
+			</div>
 		</div>
 	</spring:bind>
 

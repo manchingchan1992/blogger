@@ -12,6 +12,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "categories", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "id")})
@@ -27,7 +29,11 @@ implements java.io.Serializable {
 	
 	private Date createDate;
 	private String createUser;
-
+	private Date updateDate;
+	private String updateUser;
+	
+	private boolean enabled = true;
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -67,6 +73,7 @@ implements java.io.Serializable {
 	
 	@Column(name = "create_date", columnDefinition="DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -82,10 +89,39 @@ implements java.io.Serializable {
 	public void setCreateUser(String createUser) {
 		this.createUser = createUser;
 	}
+	
+	@Column(name = "update_date", columnDefinition="DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+	@Column(name = "update_user")
+	public String getUpdateUser() {
+		return updateUser;
+	}
+
+	public void setUpdateUser(String updateUser) {
+		this.updateUser = updateUser;
+	}
+	
+	@Column(name = "enabled")
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	//Check if this is for New of Update
 	@Transient
 	public boolean isNew() {
 		return (this.id == null);
 	}
+	
 }
