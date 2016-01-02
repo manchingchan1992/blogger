@@ -217,4 +217,34 @@ public class CategoryAction {
 				model.addAttribute("msg", "Failed! Error:"+e1.getMessage());
 		    }
 		}
+		
+		// show user
+		@RequestMapping(value = UrlRouteMapping.CATEGORY_SELECT_ACTION, method = RequestMethod.GET)
+		public String showCategory(@PathVariable("id") int id, Model model, HttpServletRequest request, HttpEntity<String> requestEntity
+				,final RedirectAttributes redirectAttributes) {
+
+			logger.debug("showCategory() id: {}", id);
+
+			try {
+				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+id;
+				Category category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, null, HttpMethod.GET);
+				if (category == null) {
+					model.addAttribute("css", "danger");
+					model.addAttribute("msg", "Category not found");
+				}
+				model.addAttribute("category", category);
+			}
+			catch (HttpStatusCodeException e) {
+		    	exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
+		    	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		    }
+			catch (Exception e1) {
+				e1.printStackTrace();
+	        	redirectAttributes.addFlashAttribute("css", "danger");
+	        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
+	        	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		    }
+			
+			return UrlRouteMapping.CATEGORY_SHOW_ACTION;
+		}
 }
