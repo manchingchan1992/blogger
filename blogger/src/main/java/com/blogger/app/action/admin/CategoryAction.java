@@ -218,7 +218,7 @@ public class CategoryAction {
 		    }
 		}
 		
-		// show user
+		// show category
 		@RequestMapping(value = UrlRouteMapping.CATEGORY_SELECT_ACTION, method = RequestMethod.GET)
 		public String showCategory(@PathVariable("id") int id, Model model, HttpServletRequest request, HttpEntity<String> requestEntity
 				,final RedirectAttributes redirectAttributes) {
@@ -246,5 +246,41 @@ public class CategoryAction {
 		    }
 			
 			return UrlRouteMapping.CATEGORY_SHOW_ACTION;
+		}
+		
+		// delete category
+		@RequestMapping(value = UrlRouteMapping.CATEGORY_DELETE_ACTION, method = RequestMethod.GET)
+		public String deleteCategory(@PathVariable("id") int id,  HttpServletRequest request, HttpEntity<String> requestEntity,
+			final RedirectAttributes redirectAttributes) {
+
+			logger.debug("deleteCategory() : {}", id);
+
+			try {
+				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_DELETE_ACTION+id;
+				Integer returnCode = (Integer)requestGateway.sendRequest(request, requestEntity, requestURL, Integer.class, null, HttpMethod.GET);
+				if (returnCode.equals(RequestGateway.STATUS_SUCCESS)){
+					redirectAttributes.addFlashAttribute("css", "success");
+					redirectAttributes.addFlashAttribute("msg", "Category is deleted!");
+				}
+				else {
+					redirectAttributes.addFlashAttribute("css", "danger");
+					redirectAttributes.addFlashAttribute("msg", "Category fail to delete!");
+				}
+			}
+			catch (HttpStatusCodeException e) {
+		    	exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
+		    	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		    }
+			catch (Exception e1) {
+				e1.printStackTrace();
+	        	redirectAttributes.addFlashAttribute("css", "danger");
+	        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
+	        	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		    }
+			
+			
+			
+			return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+
 		}
 }

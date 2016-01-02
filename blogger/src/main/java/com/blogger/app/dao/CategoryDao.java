@@ -20,5 +20,5 @@ public interface CategoryDao {
 	
 	public void addCategory(Category category) throws HandlerException;
 	
-	public void deleteCategory(String id) throws HandlerException;
+	public void deleteCategory(Integer id) throws HandlerException;
 }

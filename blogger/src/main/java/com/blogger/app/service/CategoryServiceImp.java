@@ -55,7 +55,7 @@ public class CategoryServiceImp implements CategoryService{
     	}
     }
     @Transactional(readOnly = false)
-    public void deleteCategory(String id){
+    public void deleteCategory(Integer id){
     	categoryDao.deleteCategory(id);
     }
     

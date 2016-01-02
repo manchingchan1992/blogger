@@ -16,6 +16,10 @@ import org.springframework.web.client.RestTemplate;
 public class RequestGateway{
 	private static final Logger logger = LoggerFactory.getLogger(RequestGateway.class);
 	static final String CSRF_PARAM_NAME = "_csrf";
+	
+	public static int STATUS_SUCCESS = 1;
+	public static int STATUS_FAIL = 2;
+	
 
 	@Autowired
 	private RestTemplate restTemplate;

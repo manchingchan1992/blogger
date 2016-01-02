@@ -14,7 +14,7 @@ public interface CategoryService extends Serializable{
 	
 	public void saveCategory(Category category) throws HandlerException;
 	
-	public void deleteCategory(String id) throws HandlerException;
+	public void deleteCategory(Integer id) throws HandlerException;
 	
 	public List<Category> getCategoryList() throws HandlerException;
 	

@@ -137,9 +137,17 @@ public class CategoryDaoImp extends CustomHibernateDaoSupport implements Categor
 //	    logger.info("Add Category, Rows affected: " + count);
 	}
 	
-	public void deleteCategory(String id) throws HandlerException {
+	public void deleteCategory(Integer id) throws HandlerException {
         logger.info("Deleting Category");
-        
+        try {
+    		getHibernateTemplate().bulkUpdate("delete from Category where id=?",id);
+        }
+        catch (Exception e) {
+			e.printStackTrace();
+			logger.info("Exception :" + e.getMessage());
+			throw new HandlerException("000",e.getMessage());
+		}
+
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //Date today = new Date();
         //String now = sdf.format(today);

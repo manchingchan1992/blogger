@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blogger.app.entity.Category;
 import com.blogger.app.service.CategoryService;
+import com.blogger.app.util.RequestGateway;
 import com.blogger.app.util.UrlRouteMapping;
 
 /**
@@ -61,5 +62,12 @@ public class CategoryHandler {
 	public @ResponseBody Category selectCategory(@PathVariable("id") int id) {
 		Category category = categoryService.getCategoryById(id);
 		return category;
+    }
+	
+	@RequestMapping(value = UrlRouteMapping.CATEGORYHANDLER_DELETE_ACTION+"{id}")
+	public @ResponseBody Integer deleteCategory(@PathVariable("id") int id) {
+		logger.info("Delete category: id:"+id);
+		categoryService.deleteCategory(id);
+		return RequestGateway.STATUS_SUCCESS;
     }
 }

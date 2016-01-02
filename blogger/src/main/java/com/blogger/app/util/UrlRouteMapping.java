@@ -19,11 +19,13 @@ public class UrlRouteMapping {
 	public final static String CATEGORY_SHOW_UPDATE_FORM_ACTION = "/admin/category/{id}/update";
 	public final static String CATEGORY_SELECT_ACTION = "/admin/category/{id}";
 	public final static String CATEGORY_SHOW_ACTION = "/admin/category/show";
+	public final static String CATEGORY_DELETE_ACTION = "/admin/category/{id}/delete";
 
 
 	public final static String CATEGORYHANDLER_LIST_ACTION = "/handler/categoryHandler/list";
 	public final static String CATEGORYHANDLER_SAVE_ACTION = "/handler/categoryHandler/save";
 	public final static String CATEGORYHANDLER_SELECT_ACTION = "/handler/categoryHandler/select/";
+	public final static String CATEGORYHANDLER_DELETE_ACTION = "/handler/categoryHandler/delete/";
 
 
 	public static final String CSRF_PARAM_NAME = "_csrf";
