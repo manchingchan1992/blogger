@@ -50,7 +50,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  */
 @Controller
 public class CategoryAction {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(CategoryAction.class);
 
 	/**
@@ -58,40 +58,40 @@ public class CategoryAction {
 	 */
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	CategoryFormValidator categoryFormValidator;
-	
+
 	@Autowired
 	private MappingJackson2HttpMessageConverter jsonConverter;
-	
+
 	@Autowired
 	private RequestGateway requestGateway;
-	
+
 	@Autowired
 	private MainExceptionHandler exceptionHandler;
-	
+
 	// list page
 	@RequestMapping(value = UrlRouteMapping.CATEGORY_LIST_ACTION, method = RequestMethod.GET)
 	public String showAllCategory(Model model, HttpServletRequest request, HttpEntity<String> requestEntity) {
-		
+
 		try {
 			String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_LIST_ACTION;
 			logger.debug("showAllCategory():"+requestURL);
 			Category[] categoryList  = (Category[]) requestGateway.sendRequest(request, requestEntity, requestURL, Category[].class, null, HttpMethod.GET);
 
-//	    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
-	    	logger.info("categoryList size:"+categoryList.length);
+			//	    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
+			logger.info("categoryList size:"+categoryList.length);
 			model.addAttribute("categoryList", categoryList);
-	    }
-	    catch (HttpStatusCodeException e) {
-	    	exceptionHandler.handleJsonHandlerError(model, e);
-	    }
+		}
+		catch (HttpStatusCodeException e) {
+			exceptionHandler.handleJsonHandlerError(model, e);
+		}
 		catch (Exception e1) {
 			e1.printStackTrace();
 			model.addAttribute("css", "danger");
 			model.addAttribute("msg", "Failed! Error:"+e1.getMessage());
-	    }
+		}
 		return UrlRouteMapping.CATEGORY_LIST_URL;
 
 	}
@@ -105,182 +105,182 @@ public class CategoryAction {
 		model.addAttribute("categoryForm", category);
 		return UrlRouteMapping.CATEGORY_FORM_URL;
 	}
-	
-		
-		// save or update user
-		// 1. @ModelAttribute bind form value
-		// 2. @Validated form validator
-		// 3. RedirectAttributes for flash value
-		@RequestMapping(value = UrlRouteMapping.CATEGORY_SAVE_ACTION, method = RequestMethod.POST)
-		public String saveCategory(@ModelAttribute("categoryForm") Category category,
-				BindingResult result, Model model, 
-				final RedirectAttributes redirectAttributes, HttpServletRequest request, HttpEntity<String> requestEntity) {
 
-			logger.debug("saveCategory(): {}",category);
-			categoryFormValidator.validate(category, result);
-			if (result.hasErrors()) {
-				return UrlRouteMapping.CATEGORY_FORM_URL;
-			} else {
-				HttpSession session = request.getSession();		
-			    User user = (User)session.getAttribute("USERBEAN");
-			    if(category.isNew()){
-				    category.setCreateUser(user.getLoginName());
-			    }
-			    else 
-			    	category.setUpdateUser(user.getLoginName());
 
-				try {
-//					HttpHeaders requestHeaders = UrlRouteMapping.restTemplHeaderBuilder(requestEntity, request);
-//					HttpEntity<Category> categoryEntity = new HttpEntity<Category>(category,requestHeaders);
-//					ResponseEntity<Category> categoryResponse = restTemplate.exchange(
-//						    requestURL,
-//						    HttpMethod.POST,
-//						    categoryEntity,
-//						    Category.class);
-//					category = categoryResponse.getBody();
-					String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SAVE_ACTION;
-					category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, category, HttpMethod.POST);
-//					category = restTemplate.postForObject(requestURL,category, Category.class);
-					redirectAttributes.addFlashAttribute("css", "success");
-					if(category.isNew()){
-					  redirectAttributes.addFlashAttribute("msg", "Category added successfully!");
-					}else{
-					  redirectAttributes.addFlashAttribute("msg", "Category updated successfully!");
-					}
-			    }
-			    catch (HttpStatusCodeException e) {
-			    	exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
-			    }
-				catch (Exception e1) {
-					e1.printStackTrace();
-		        	redirectAttributes.addFlashAttribute("css", "danger");
-		        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
-			    }
-				
-				// POST/REDIRECT/GET
-				return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+	// save or update user
+	// 1. @ModelAttribute bind form value
+	// 2. @Validated form validator
+	// 3. RedirectAttributes for flash value
+	@RequestMapping(value = UrlRouteMapping.CATEGORY_SAVE_ACTION, method = RequestMethod.POST)
+	public String saveCategory(@ModelAttribute("categoryForm") Category category,
+			BindingResult result, Model model, 
+			final RedirectAttributes redirectAttributes, HttpServletRequest request, HttpEntity<String> requestEntity) {
 
-				// POST/FORWARD/GET
-				// return "user/list";
-
-			}
-
-		}
-		
-		// show update form
-		@RequestMapping(value = UrlRouteMapping.CATEGORY_SHOW_UPDATE_FORM_ACTION, method = RequestMethod.GET)
-		public String showUpdateCategoryForm(@PathVariable("id") int id, Model model, HttpServletRequest request, HttpEntity<String> requestEntity
-				,final RedirectAttributes redirectAttributes) {
-
-			logger.debug("showUpdateCategoryForm() : {}", id);
-			try {
-				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+id;
-				Category category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, null, HttpMethod.GET);
-				populateDefaultModel(model, request, requestEntity);
-				model.addAttribute("categoryForm", category);
-			}
-			catch (HttpStatusCodeException e) {
-		    	exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
-		    	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
-		    }
-			catch (Exception e1) {
-				e1.printStackTrace();
-	        	redirectAttributes.addFlashAttribute("css", "danger");
-	        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
-	        	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
-		    }
-			
+		logger.debug("saveCategory(): {}",category);
+		categoryFormValidator.validate(category, result);
+		if (result.hasErrors()) {
 			return UrlRouteMapping.CATEGORY_FORM_URL;
-
-		}
-		
-		private void populateDefaultModel(Model model, HttpServletRequest request, HttpEntity<String> requestEntity) {
-			try {
-				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_LIST_ACTION;
-				logger.debug("populateDefaultModel():"+requestURL);
-				Category[] responseList  = (Category[]) requestGateway.sendRequest(request, requestEntity, requestURL, Category[].class, null, HttpMethod.GET);
-
-//		    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
-		    	logger.info("responseList size:"+responseList.length);
-		    	Map<Integer, String> categoryList = new LinkedHashMap<Integer, String>();
-		    	for (Category category : responseList){
-		    		categoryList.put(category.getId(), category.getName()+" - "+category.getCname());
-		    	}
-				model.addAttribute("categoryList", categoryList);
-		    }
-		    catch (HttpStatusCodeException e) {
-		    	exceptionHandler.handleJsonHandlerError(model, e);
-		    }
-			catch (Exception e1) {
-				e1.printStackTrace();
-				model.addAttribute("css", "danger");
-				model.addAttribute("msg", "Failed! Error:"+e1.getMessage());
-		    }
-		}
-		
-		// show category
-		@RequestMapping(value = UrlRouteMapping.CATEGORY_SELECT_ACTION, method = RequestMethod.GET)
-		public String showCategory(@PathVariable("id") int id, Model model, HttpServletRequest request, HttpEntity<String> requestEntity
-				,final RedirectAttributes redirectAttributes) {
-
-			logger.debug("showCategory() id: {}", id);
-
-			try {
-				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+id;
-				Category category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, null, HttpMethod.GET);
-				if (category == null) {
-					model.addAttribute("css", "danger");
-					model.addAttribute("msg", "Category not found");
-				}
-				model.addAttribute("category", category);
+		} else {
+			HttpSession session = request.getSession();		
+			User user = (User)session.getAttribute("USERBEAN");
+			if(category.isNew()){
+				category.setCreateUser(user.getLoginName());
 			}
-			catch (HttpStatusCodeException e) {
-		    	exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
-		    	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
-		    }
-			catch (Exception e1) {
-				e1.printStackTrace();
-	        	redirectAttributes.addFlashAttribute("css", "danger");
-	        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
-	        	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
-		    }
-			
-			return UrlRouteMapping.CATEGORY_SHOW_ACTION;
-		}
-		
-		// delete category
-		@RequestMapping(value = UrlRouteMapping.CATEGORY_DELETE_ACTION, method = RequestMethod.GET)
-		public String deleteCategory(@PathVariable("id") int id,  HttpServletRequest request, HttpEntity<String> requestEntity,
-			final RedirectAttributes redirectAttributes) {
-
-			logger.debug("deleteCategory() : {}", id);
+			else 
+				category.setUpdateUser(user.getLoginName());
 
 			try {
-				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_DELETE_ACTION+id;
-				Integer returnCode = (Integer)requestGateway.sendRequest(request, requestEntity, requestURL, Integer.class, null, HttpMethod.GET);
-				if (returnCode.equals(RequestGateway.STATUS_SUCCESS)){
-					redirectAttributes.addFlashAttribute("css", "success");
-					redirectAttributes.addFlashAttribute("msg", "Category is deleted!");
-				}
-				else {
-					redirectAttributes.addFlashAttribute("css", "danger");
-					redirectAttributes.addFlashAttribute("msg", "Category fail to delete!");
+				//					HttpHeaders requestHeaders = UrlRouteMapping.restTemplHeaderBuilder(requestEntity, request);
+				//					HttpEntity<Category> categoryEntity = new HttpEntity<Category>(category,requestHeaders);
+				//					ResponseEntity<Category> categoryResponse = restTemplate.exchange(
+				//						    requestURL,
+				//						    HttpMethod.POST,
+				//						    categoryEntity,
+				//						    Category.class);
+				//					category = categoryResponse.getBody();
+				String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SAVE_ACTION;
+				category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, category, HttpMethod.POST);
+				//					category = restTemplate.postForObject(requestURL,category, Category.class);
+				redirectAttributes.addFlashAttribute("css", "success");
+				if(category.isNew()){
+					redirectAttributes.addFlashAttribute("msg", "Category added successfully!");
+				}else{
+					redirectAttributes.addFlashAttribute("msg", "Category updated successfully!");
 				}
 			}
 			catch (HttpStatusCodeException e) {
-		    	exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
-		    	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
-		    }
+				exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
+			}
 			catch (Exception e1) {
 				e1.printStackTrace();
-	        	redirectAttributes.addFlashAttribute("css", "danger");
-	        	redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
-	        	return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
-		    }
-			
-			
-			
+				redirectAttributes.addFlashAttribute("css", "danger");
+				redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
+			}
+
+			// POST/REDIRECT/GET
 			return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
 
+			// POST/FORWARD/GET
+			// return "user/list";
+
 		}
+
+	}
+
+	// show update form
+	@RequestMapping(value = UrlRouteMapping.CATEGORY_SHOW_UPDATE_FORM_ACTION, method = RequestMethod.GET)
+	public String showUpdateCategoryForm(@PathVariable("id") int id, Model model, HttpServletRequest request, HttpEntity<String> requestEntity
+			,final RedirectAttributes redirectAttributes) {
+
+		logger.debug("showUpdateCategoryForm() : {}", id);
+		try {
+			String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+id;
+			Category category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, null, HttpMethod.GET);
+			populateDefaultModel(model, request, requestEntity);
+			model.addAttribute("categoryForm", category);
+		}
+		catch (HttpStatusCodeException e) {
+			exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
+			return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+			redirectAttributes.addFlashAttribute("css", "danger");
+			redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
+			return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		}
+
+		return UrlRouteMapping.CATEGORY_FORM_URL;
+
+	}
+
+	private void populateDefaultModel(Model model, HttpServletRequest request, HttpEntity<String> requestEntity) {
+		try {
+			String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_LIST_ACTION;
+			logger.debug("populateDefaultModel():"+requestURL);
+			Category[] responseList  = (Category[]) requestGateway.sendRequest(request, requestEntity, requestURL, Category[].class, null, HttpMethod.GET);
+
+			//		    	List<Category> categoryList = restTemplate.getForObject(requestURL, List.class);
+			logger.info("responseList size:"+responseList.length);
+			Map<Integer, String> categoryList = new LinkedHashMap<Integer, String>();
+			for (Category category : responseList){
+				categoryList.put(category.getId(), category.getName()+" - "+category.getCname());
+			}
+			model.addAttribute("categoryList", categoryList);
+		}
+		catch (HttpStatusCodeException e) {
+			exceptionHandler.handleJsonHandlerError(model, e);
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+			model.addAttribute("css", "danger");
+			model.addAttribute("msg", "Failed! Error:"+e1.getMessage());
+		}
+	}
+
+	// show category
+	@RequestMapping(value = UrlRouteMapping.CATEGORY_SELECT_ACTION, method = RequestMethod.GET)
+	public String showCategory(@PathVariable("id") int id, Model model, HttpServletRequest request, HttpEntity<String> requestEntity
+			,final RedirectAttributes redirectAttributes) {
+
+		logger.debug("showCategory() id: {}", id);
+
+		try {
+			String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_SELECT_ACTION+id;
+			Category category = (Category)requestGateway.sendRequest(request, requestEntity, requestURL, Category.class, null, HttpMethod.GET);
+			if (category == null) {
+				model.addAttribute("css", "danger");
+				model.addAttribute("msg", "Category not found");
+			}
+			model.addAttribute("category", category);
+		}
+		catch (HttpStatusCodeException e) {
+			exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
+			return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+			redirectAttributes.addFlashAttribute("css", "danger");
+			redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
+			return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		}
+
+		return UrlRouteMapping.CATEGORY_SHOW_ACTION;
+	}
+
+	// delete category
+	@RequestMapping(value = UrlRouteMapping.CATEGORY_DELETE_ACTION, method = RequestMethod.POST)
+	public String deleteCategory(@PathVariable("id") int id,  HttpServletRequest request, HttpEntity<String> requestEntity,
+			final RedirectAttributes redirectAttributes) {
+
+		logger.debug("deleteCategory() : {}", id);
+
+		try {
+			String requestURL = requestGateway.getServerAbsolutePath(request)+UrlRouteMapping.CATEGORYHANDLER_DELETE_ACTION+id;
+			Integer returnCode = (Integer)requestGateway.sendRequest(request, requestEntity, requestURL, Integer.class, null, HttpMethod.POST);
+			if (returnCode.equals(RequestGateway.STATUS_SUCCESS)){
+				redirectAttributes.addFlashAttribute("css", "success");
+				redirectAttributes.addFlashAttribute("msg", "Category is deleted!");
+			}
+			else {
+				redirectAttributes.addFlashAttribute("css", "danger");
+				redirectAttributes.addFlashAttribute("msg", "Category fail to delete!");
+			}
+		}
+		catch (HttpStatusCodeException e) {
+			exceptionHandler.handleJsonHandlerError(redirectAttributes, e);
+			return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+			redirectAttributes.addFlashAttribute("css", "danger");
+			redirectAttributes.addFlashAttribute("msg", "Failed! Error:"+e1.getMessage());
+			return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+		}
+
+
+
+		return "redirect:"+UrlRouteMapping.CATEGORY_LIST_ACTION;
+
+	}
 }

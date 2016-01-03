@@ -40,14 +40,14 @@
 					  <button class="btn btn-primary" 
 	                                          onclick="location.href='${updateUrl}'">Update</button>
 					  <button class="btn btn-danger" 
-	                                          onclick="this.disabled=true;location.href='${deleteUrl}'">Delete</button>
+	                                          onclick="this.disabled=true;post('${deleteUrl}',{'${_csrf.parameterName}':'${_csrf.token}'} ,'')">Delete</button>
 	                </td>
 			    </tr>
 			</c:forEach>
 		</table>
 		<div>
-			<spring:url value="/admin/category/add" var="urlAddUser" />
-			<a href="${urlAddUser}">Add Category</a>
+			<spring:url value="/admin/category/add" var="urlAddCategory" />
+			<a href="${urlAddCategory}">Add Category</a>
 		</div>
 <!-- End of Body -->
 <jsp:include page="/WEB-INF/views/admin/footer.jsp" flush="true" />

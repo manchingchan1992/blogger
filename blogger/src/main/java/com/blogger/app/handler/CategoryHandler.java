@@ -64,7 +64,7 @@ public class CategoryHandler {
 		return category;
     }
 	
-	@RequestMapping(value = UrlRouteMapping.CATEGORYHANDLER_DELETE_ACTION+"{id}")
+	@RequestMapping(value = UrlRouteMapping.CATEGORYHANDLER_DELETE_ACTION+"{id}", method = RequestMethod.POST)
 	public @ResponseBody Integer deleteCategory(@PathVariable("id") int id) {
 		logger.info("Delete category: id:"+id);
 		categoryService.deleteCategory(id);
