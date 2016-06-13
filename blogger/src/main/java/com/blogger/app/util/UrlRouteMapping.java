@@ -27,7 +27,15 @@ public class UrlRouteMapping {
 	public final static String CATEGORYHANDLER_SELECT_ACTION = "/handler/categoryHandler/select/";
 	public final static String CATEGORYHANDLER_DELETE_ACTION = "/handler/categoryHandler/delete/";
 
+	public final static String ARTICLE_LIST_ACTION = "/admin/article";
+	public final static String ARTICLE_LIST_URL = "admin/article/list";
+	public final static String ARTICLE_SHOW_FORM_ACTION = "/admin/article/add";
+	public final static String ARTICLE_FORM_URL = "admin/article/articleform";
 
+	public final static String ARTICLE_HANDLER_LIST_ACTION = "/handler/articleHandler/list";
+
+
+	
 	public static final String CSRF_PARAM_NAME = "_csrf";
 	private static final Logger logger = LoggerFactory.getLogger(UrlRouteMapping.class);
 

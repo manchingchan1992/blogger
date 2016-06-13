@@ -57,13 +57,7 @@ public class CategoryAction {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@Autowired
-	private RestTemplate restTemplate;
-
-	@Autowired
 	CategoryFormValidator categoryFormValidator;
-
-	@Autowired
-	private MappingJackson2HttpMessageConverter jsonConverter;
 
 	@Autowired
 	private RequestGateway requestGateway;
